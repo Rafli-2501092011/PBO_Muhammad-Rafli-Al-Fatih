@@ -57,7 +57,8 @@ public class FormMahasiswa extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        Simpan = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(102, 204, 255));
@@ -102,7 +103,7 @@ public class FormMahasiswa extends javax.swing.JFrame {
             }
         });
         getContentPane().add(txtNama);
-        txtNama.setBounds(100, 22, 450, 22);
+        txtNama.setBounds(100, 22, 350, 22);
 
         txtNim.setText("jTextField11");
         getContentPane().add(txtNim);
@@ -125,6 +126,11 @@ public class FormMahasiswa extends javax.swing.JFrame {
         txtNilaiUts.setBounds(100, 207, 450, 22);
 
         txtNilaiAngka.setText("jTextField16");
+        txtNilaiAngka.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNilaiAngkaActionPerformed(evt);
+            }
+        });
         getContentPane().add(txtNilaiAngka);
         txtNilaiAngka.setBounds(640, 20, 450, 22);
 
@@ -154,7 +160,7 @@ public class FormMahasiswa extends javax.swing.JFrame {
         btnclear.setBounds(90, 7, 81, 23);
 
         getContentPane().add(jPanel1);
-        jPanel1.setBounds(24, 240, 180, 40);
+        jPanel1.setBounds(24, 240, 260, 40);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -189,17 +195,26 @@ public class FormMahasiswa extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel2.setLayout(null);
 
-        jButton2.setText("Simpan");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        Simpan.setText("Simpan");
+        Simpan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                SimpanActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton2);
-        jButton2.setBounds(15, 6, 80, 30);
+        jPanel2.add(Simpan);
+        Simpan.setBounds(15, 6, 80, 30);
 
         getContentPane().add(jPanel2);
         jPanel2.setBounds(580, 90, 110, 40);
+
+        jButton1.setText("Cari");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1);
+        jButton1.setBounds(470, 20, 72, 23);
 
         setSize(new java.awt.Dimension(1121, 771));
         setLocationRelativeTo(null);
@@ -225,18 +240,27 @@ public class FormMahasiswa extends javax.swing.JFrame {
         clear(); 
     }//GEN-LAST:event_btnclearActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void SimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SimpanActionPerformed
         MahasiswaNilai mhs = new MahasiswaNilai();
-        mhs.setNim(txtNim.getText());
         mhs.setNama(txtNama.getText());
+        mhs.setNim(txtNim.getText());
         mhs.setAlamat(txtAlamat.getText());
-        mhs.setTugas(Double.parseDouble(txtNilaiTugas.getText()));
-        mhs.setUts(Double.parseDouble(txtNilaiUts.getText()));
-        mhs.setUas(Double.parseDouble(txtNilaiUas.getText()));
+        mhs.setTugas(Double.valueOf(txtNilaiTugas.getText()));
+        mhs.setUts(Double.valueOf(txtNilaiUts.getText()));
+        mhs.setUas(Double.valueOf(txtNilaiUas.getText()));
         String pesan = controller.insert(mhs);
         JOptionPane.showMessageDialog(this, pesan);
         tampilData();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_SimpanActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        tampilForm(txtNim.getText());
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtNilaiAngkaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNilaiAngkaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNilaiAngkaActionPerformed
     
     /**
      * @param args the command line arguments
@@ -264,9 +288,10 @@ public class FormMahasiswa extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Simpan;
     private javax.swing.JButton btnProses;
     private javax.swing.JButton btnclear;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -306,8 +331,9 @@ public class FormMahasiswa extends javax.swing.JFrame {
         model.setRowCount(0);
         for (MahasiswaNilai mhs : data) {
             Object[] row = {
-                mhs.getNim(),
                 mhs.getNama(),
+                mhs.getNim(),
+                mhs.getAlamat(),
                 mhs.getTugas(),
                 mhs.getUts(),
                 mhs.getUas(),
@@ -317,6 +343,21 @@ public class FormMahasiswa extends javax.swing.JFrame {
             model.addRow(row);
         }
     
+    }
+
+    private void tampilForm(String nim) {
+        MahasiswaNilai mhs = controller.getByNIm(nim);
+        if(mhs != null){
+            txtNim.setText(mhs.getNim());
+            txtNama.setText(mhs.getNama());
+            txtAlamat.setText(mhs.getAlamat());
+            txtNilaiTugas.setText(String.valueOf(mhs.getTugas()));
+            txtNilaiUts.setText(String.valueOf(mhs.getUts()));
+            txtNilaiUas.setText(String.valueOf(mhs.getUas()));
+            txtNilaiAngka.setText(String.valueOf(mhs.getNilaiAngka()));
+            txtNilaiHuruf.setText(mhs.getNilaiHuruf());
+        }
+        
     }
     
     
